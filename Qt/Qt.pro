@@ -1,9 +1,11 @@
 QT       += core gui
-QT += widgets
+QT += widgets printsupport
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    qcustomplot.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    qcustomplot.h

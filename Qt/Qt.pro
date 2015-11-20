@@ -1,11 +1,14 @@
 QT       += core gui
 QT += widgets printsupport
+QT += serialport
 
-SOURCES += \
+SOURCES +=\
     main.cpp \
     mainwindow.cpp \
-    qcustomplot.cpp
+    qcustomplot.cpp \
+    serialportwindow.cpp
 
-HEADERS += \
+HEADERS +=\
     mainwindow.h \
-    qcustomplot.h
+    qcustomplot.h \
+    serialportwindow.h

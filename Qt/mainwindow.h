@@ -5,18 +5,26 @@
 #include <QObject>
 #include <QSerialPort>
 #include <QSerialPortInfo>
+#include <QThread>
 
 #include "qcustomplot.h"
+
+class SerialManager;
 
 class MainWindow : public QMainWindow
 {
 
     Q_OBJECT
 
+    friend class SerialManager;
 
     //General settings=====================================================================================================
 public:
     MainWindow();
+
+private :
+
+    QThread serialThread;
 
     //--------------------------------------------------------------------------------------------------------------------
 
@@ -39,19 +47,18 @@ private:
 
     QCustomPlot *plot;
     QWidget *centralWindow;
-    QHBoxLayout *mainLayout;
+    QGridLayout *mainLayout;
     QTextEdit *affichageLog;
+    QLineEdit *displayWriting;
         //--------------------------------------------------------------------------------------------------------------
 
 
         //Serial Port==================================================
 
-public :
-    QSerialPort *serial;
+private :
+    SerialManager *manager;
 
 public slots:
-
-    void openSerialPort();
 
         //--------------------------------------------------------------
 
@@ -71,7 +78,6 @@ private :
         //Serial Port Menu : can open, read (write) serial ports to communicate with
     QMenu *menuSerialPort;
     QAction *actionOpenSerial;
-    QAction *actionReadSerial;
 
     //-----------------------------------------------------
 

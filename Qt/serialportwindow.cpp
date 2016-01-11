@@ -2,12 +2,14 @@
  * It will allow the user to change the settings of the serial port throught a user-friendly interface */
 
 #include "serialportwindow.h"
+#include "mainwindow.h"
+#include "serialmanager.h"
 
 #include <QObject>
 
-SerialPortWindow::SerialPortWindow(MainWindow *mainWindow)
+SerialPortWindow::SerialPortWindow(SerialManager *manager)
 {
-    parent = mainWindow;
+    parent = manager;
     setWindowTitle("Select a port");
     QGridLayout *mainLayout = new QGridLayout();
     availablePortsDisplay = new QComboBox(this);
@@ -38,11 +40,18 @@ SerialPortWindow::SerialPortWindow(MainWindow *mainWindow)
 
 void SerialPortWindow::acceptSerialPort(){
     parent->serial = new QSerialPort(availablePortsDisplay->currentText());
+    parent->serial->setBaudRate(9600);
+    parent->serial->setDataBits(QSerialPort::Data8);
+    parent->serial->setParity(QSerialPort::NoParity);
+    parent->serial->setStopBits(QSerialPort::OneStop);
+
     bool result = parent->serial->open(QIODevice::ReadWrite);
-    if (result)
-            parent->updateLog("Serial port " + availablePortsDisplay->currentText() + " is open.");
+    if (result){
+            parent->parent->updateLog("Serial port " + availablePortsDisplay->currentText() + " is open.");
+            parent->beginReading(100);
+    }
         else
-            parent->updateLog("Serial port " + availablePortsDisplay->currentText() + " could not be opened");
+            parent->parent->updateLog("Serial port " + availablePortsDisplay->currentText() + " could not be opened");
 
     this->close();
 }

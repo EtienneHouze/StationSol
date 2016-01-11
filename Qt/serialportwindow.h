@@ -3,11 +3,12 @@
 
 #include <QtWidgets>
 #include <QObject>
-#include "mainwindow.h"
 #include <QSerialPort>
 #include <QSerialPortInfo>
 #include <QList>
 #include <qapplication.h>
+
+class SerialManager;
 
 class SerialPortWindow:public QWidget
 {
@@ -21,11 +22,11 @@ private :
     QLabel *displayTest;
     QPushButton *acceptButton;
     QPushButton *discardButton;
-    MainWindow *parent;
+    SerialManager *parent;
 
 
 public:
-    SerialPortWindow(MainWindow *mainWindow);
+    SerialPortWindow(SerialManager *manager);
 
 public slots :
 

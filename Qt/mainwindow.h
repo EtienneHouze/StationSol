@@ -32,9 +32,13 @@ private :
 
 
     //Opening a Directory=================================================================================================
-    QDir workspace;
+
     QString *openFileName;
     QStack<QString> *filesStack;
+
+public :
+
+    QDir workspace;
 
 
 
@@ -79,6 +83,7 @@ private :
         //File Menu
     QMenu *menuFile;
     QAction *actionOpenDir;
+    QAction *actionClose;
         //Serial Port Menu : can open, read (write) serial ports to communicate with
     QMenu *menuSerialPort;
     QAction *actionOpenSerial;
@@ -87,9 +92,14 @@ private :
     //-----------------------------------------------------
 
 
-//Log==============================================================
+    //Log==============================================================
 public :
     void updateLog(QString content);
+
+
+    //Closing the window and saving===============================
+public slots:
+    void closeWindow();
 
 };
 

@@ -5,6 +5,7 @@
 #include "serialmanager.h"
 
 #include <QDirIterator>
+#include <QDate>
 
 MainWindow::MainWindow()
 {
@@ -17,7 +18,9 @@ MainWindow::MainWindow()
         //File Menu
     menuFile = menuBar()->addMenu("&File");
     actionOpenDir = new QAction("&Open Directory",this);
+    actionClose = new QAction("&Save and Quit", this);
     menuFile->addAction(actionOpenDir);
+    menuFile->addAction(actionClose);
         //Serial Port Menu
     menuSerialPort = menuBar()->addMenu("&SerialPort");
     actionOpenSerial = new QAction("&Open",this);
@@ -43,11 +46,14 @@ MainWindow::MainWindow()
     //Setting up the log historic==============================================
     affichageLog->setReadOnly(true);
 
+
+    //Setting up the workspace directory, where data will be stored============
     workspace = QDir::current();
     if(!workspace.cd("data")){
             workspace.mkdir("data");
             workspace.cd("data");
-}
+    }
+    QDir::setCurrent(workspace.path());
 
 
     //Connectiong signals and slots ==========================================
@@ -57,6 +63,7 @@ MainWindow::MainWindow()
     QObject::connect(actionOpenDir,SIGNAL(triggered()),this, SLOT(openDir()));
     QObject::connect(actionOpenSerial,SIGNAL(triggered()),manager,SLOT(openSerialPort()));
     QObject::connect(actionCloseSerial,SIGNAL(triggered()),manager,SLOT(closeSerialPort()));
+    QObject::connect(actionClose,SIGNAL(triggered()),this,SLOT(closeWindow()));
 
 
 
@@ -86,4 +93,13 @@ void MainWindow::updateLog(QString content){
     affichageLog->append(content);
 }
 
+
+void MainWindow::closeWindow(){
+    QFile file(QDate::currentDate().toString("yyyy.MM.dd")+".txt");
+    file.open(QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream stream(&file);
+    stream << affichageLog->toPlainText();
+    file.close();
+    this->close();
+}
 

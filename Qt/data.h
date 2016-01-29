@@ -5,16 +5,18 @@
 #include <QLinkedList>
 #include<QByteArray>
 
-
+class MainWindow;
 
 class Data : public QObject
 {
   //  Q_OBJECT
 public:
 
-    Data();
+    Data(MainWindow *mainWindow);
+    void save();
     
 private :
+    MainWindow *parent;
     int temp;
     QByteArray lastData;
 

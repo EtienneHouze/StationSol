@@ -6,6 +6,8 @@
 #include <QSerialPort>
 #include <QSerialPortInfo>
 #include <QThread>
+#include <QStack>
+#include <QDir>
 
 #include "qcustomplot.h"
 
@@ -29,14 +31,16 @@ private :
     //--------------------------------------------------------------------------------------------------------------------
 
 
-    //Opening a text file=================================================================================================
+    //Opening a Directory=================================================================================================
+    QDir workspace;
     QString *openFileName;
-    QString *fileContent;
+    QStack<QString> *filesStack;
+
 
 
 public slots:
 
-    void openTxtFile();
+    void openDir();
 
 
     //--------------------------------------------------------------------------------------------------------------------
@@ -74,10 +78,11 @@ private :
 
         //File Menu
     QMenu *menuFile;
-    QAction *actionOpenFile;
+    QAction *actionOpenDir;
         //Serial Port Menu : can open, read (write) serial ports to communicate with
     QMenu *menuSerialPort;
     QAction *actionOpenSerial;
+    QAction *actionCloseSerial;
 
     //-----------------------------------------------------
 

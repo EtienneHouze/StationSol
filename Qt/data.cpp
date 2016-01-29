@@ -1,7 +1,9 @@
 #include "data.h"
 
-Data::Data()
-{
 
+
+Data::Data():QObject()
+{
+    temp = 0;
 }
 

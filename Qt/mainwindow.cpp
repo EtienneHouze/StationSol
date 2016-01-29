@@ -4,6 +4,7 @@
 #include "writeserial.h"
 #include "serialmanager.h"
 
+#include <QDirIterator>
 
 MainWindow::MainWindow()
 {
@@ -15,12 +16,14 @@ MainWindow::MainWindow()
     //Setting up the menu bar=====================================================
         //File Menu
     menuFile = menuBar()->addMenu("&File");
-    actionOpenFile = new QAction("&Open",this);
-    menuFile->addAction(actionOpenFile);
+    actionOpenDir = new QAction("&Open Directory",this);
+    menuFile->addAction(actionOpenDir);
         //Serial Port Menu
     menuSerialPort = menuBar()->addMenu("&SerialPort");
     actionOpenSerial = new QAction("&Open",this);
+    actionCloseSerial = new QAction("&close",this);
     menuSerialPort -> addAction(actionOpenSerial);
+    menuSerialPort->addAction(actionCloseSerial);
 
 
 
@@ -40,32 +43,47 @@ MainWindow::MainWindow()
     //Setting up the log historic==============================================
     affichageLog->setReadOnly(true);
 
+    workspace = QDir::current();
+    if(!workspace.cd("data")){
+            workspace.mkdir("data");
+            workspace.cd("data");
+}
+
 
     //Connectiong signals and slots ==========================================
 
 
-    QObject::connect(displayWriting,SIGNAL(returnPressed()),manager,SLOT(writeSerialPort()));  QObject::connect(actionOpenFile,SIGNAL(triggered()),this, SLOT(openTxtFile()));
+    QObject::connect(displayWriting,SIGNAL(returnPressed()),manager,SLOT(writeSerialPort()));
+    QObject::connect(actionOpenDir,SIGNAL(triggered()),this, SLOT(openDir()));
     QObject::connect(actionOpenSerial,SIGNAL(triggered()),manager,SLOT(openSerialPort()));
+    QObject::connect(actionCloseSerial,SIGNAL(triggered()),manager,SLOT(closeSerialPort()));
 
 
 
 }
 
-void MainWindow::openTxtFile(){
-    QString fileName = QFileDialog::getOpenFileName(this,tr("Open File"),"/home",tr("Bin file(*.bin)"));
-    QFile file(fileName);
-    if(!file.open(QIODevice::ReadOnly)) {
-        QMessageBox::information(0, "error", file.errorString());
+void MainWindow::openDir(){
+    QFileDialog *fileDialog = new QFileDialog(this);
+    filesStack = new QStack<QString>();
+    if (fileDialog->exec() == QFileDialog::Accepted) {
+        QDir selectedDir(fileDialog->selectedFiles().first());
+        selectedDir.setFilter(QDir::Files |
+                              QDir::Dirs | QDir::NoDot | QDir::NoDotDot);
+        //QStringList qsl; qsl.append("*.tex"); // I only want XML files
+        //selectedDir.setNameFilters(qsl);
+
+        QDirIterator it(selectedDir, QDirIterator::Subdirectories);
+            while(it.hasNext()) {
+                filesStack->push(it.next());
+            }
+        updateLog(QString::number(filesStack->length()));
     }
-    QTextStream in(&file);
-    *fileContent = in.readAll();
-    affichageLog->setText(*fileContent);
 
 }
 
 //This method (slot) can be used when any action is performed in order to update the log.
 void MainWindow::updateLog(QString content){
-    affichageLog->append(QTime::currentTime().toString("h:m:s") + " - " + content);
+    affichageLog->append(content);
 }
 
 

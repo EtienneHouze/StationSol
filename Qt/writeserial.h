@@ -2,14 +2,33 @@
 #define WRITESERIAL_H
 
 
-class WriteSerial
+#include <QtWidgets>
+#include <QObject>
+#include <QSerialPort>
+#include <QSerialPortInfo>
+#include <QList>
+#include <qapplication.h>
+
+class SerialManager;
+
+class WriteSerial : public QWidget
 {
+    Q_OBJECT
+
 public:
-    WriteSerial();
+    WriteSerial(SerialManager *manager);
+private :
+    SerialManager *parent;
+    QGridLayout *layout;
+    QLineEdit *textEntry;
+    QPushButton *acceptButton;
+    QPushButton *discardButton;
+
 
 signals:
 
 public slots:
+    void writePort();
 };
 
 #endif // WRITESERIAL_H

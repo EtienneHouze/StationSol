@@ -17,9 +17,7 @@ MainWindow::MainWindow()
     //Setting up the menu bar=====================================================
         //File Menu
     menuFile = menuBar()->addMenu("&File");
-    actionOpenDir = new QAction("&Open Directory",this);
     actionClose = new QAction("&Save and Quit", this);
-    menuFile->addAction(actionOpenDir);
     menuFile->addAction(actionClose);
         //Serial Port Menu
     menuSerialPort = menuBar()->addMenu("&SerialPort");
@@ -60,7 +58,6 @@ MainWindow::MainWindow()
 
 
     QObject::connect(displayWriting,SIGNAL(returnPressed()),manager,SLOT(writeSerialPort()));
-    QObject::connect(actionOpenDir,SIGNAL(triggered()),this, SLOT(openDir()));
     QObject::connect(actionOpenSerial,SIGNAL(triggered()),manager,SLOT(openSerialPort()));
     QObject::connect(actionCloseSerial,SIGNAL(triggered()),manager,SLOT(closeSerialPort()));
     QObject::connect(actionClose,SIGNAL(triggered()),this,SLOT(closeWindow()));
@@ -69,31 +66,14 @@ MainWindow::MainWindow()
 
 }
 
-void MainWindow::openDir(){
-    QFileDialog *fileDialog = new QFileDialog(this);
-    filesStack = new QStack<QString>();
-    if (fileDialog->exec() == QFileDialog::Accepted) {
-        QDir selectedDir(fileDialog->selectedFiles().first());
-        selectedDir.setFilter(QDir::Files |
-                              QDir::Dirs | QDir::NoDot | QDir::NoDotDot);
-        //QStringList qsl; qsl.append("*.tex"); // I only want XML files
-        //selectedDir.setNameFilters(qsl);
 
-        QDirIterator it(selectedDir, QDirIterator::Subdirectories);
-            while(it.hasNext()) {
-                filesStack->push(it.next());
-            }
-        updateLog(QString::number(filesStack->length()));
-    }
-
-}
 
 //This method (slot) can be used when any action is performed in order to update the log.
 void MainWindow::updateLog(QString content){
     affichageLog->append(content);
 }
 
-
+//closes the window and save the log in a history file in the working directory
 void MainWindow::closeWindow(){
     QFile file(QDate::currentDate().toString("yyyy.MM.dd")+".txt");
     file.open(QIODevice::WriteOnly | QIODevice::Text);

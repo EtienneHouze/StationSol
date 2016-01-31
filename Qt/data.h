@@ -3,7 +3,8 @@
 
 #include <QObject>
 #include <QLinkedList>
-#include<QByteArray>
+#include <QByteArray>
+#include <QTimer>
 
 class MainWindow;
 
@@ -19,6 +20,7 @@ private :
     MainWindow *parent;
     int temp;
     QByteArray lastData;
+    QTimer refreshTimer;
 
     
 

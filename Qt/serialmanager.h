@@ -27,6 +27,8 @@ public:
 
 private :
     QTimer *readTimer;
+    QByteArray buffer;
+    bool stillReading;
 
 
 

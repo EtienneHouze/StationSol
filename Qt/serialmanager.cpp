@@ -7,6 +7,7 @@ SerialManager::SerialManager(MainWindow *mainWindow) : QObject(mainWindow)
 {
     parent = mainWindow;
     serial = new QSerialPort();
+    stillReading = false;
     readTimer = new QTimer(this);
     QObject::connect(readTimer,SIGNAL(timeout()),this,SLOT(automaticReading()));
 }
@@ -33,9 +34,19 @@ void SerialManager::beginReading(int msec){
 }
 
 void SerialManager::automaticReading(){
-    QByteArray data = serial->readLine(2048);
-    if(data.size() != 0)
-        parent->updateLog(QString(data));
+    if(stillReading)
+        buffer.append(serial->readLine(2048));
+    else
+        buffer = serial->readLine(2048);
+    if(buffer.size() != 0){
+        if(buffer.contains('\r')){
+            parent->updateLog(QString(buffer));
+            stillReading = false;
+        }
+        else
+            stillReading = true;
+
+    }
 }
 
 void SerialManager::closeSerialPort(){

@@ -20,31 +20,18 @@ class MainWindow : public QMainWindow
 
     friend class SerialManager;
 
-    //General settings=====================================================================================================
+    //Constructor=====================================================================================================
 public:
     MainWindow();
-
-private :
-
-    QThread serialThread;
 
     //--------------------------------------------------------------------------------------------------------------------
 
 
-    //Opening a Directory=================================================================================================
-
-    QString *openFileName;
-    QStack<QString> *filesStack;
+    //Setting up a work directory=====================================================================
 
 public :
 
     QDir workspace;
-
-
-
-public slots:
-
-    void openDir();
 
 
     //--------------------------------------------------------------------------------------------------------------------
@@ -66,8 +53,6 @@ private:
 private :
     SerialManager *manager;
 
-public slots:
-
         //--------------------------------------------------------------
 
 
@@ -82,7 +67,6 @@ private :
 
         //File Menu
     QMenu *menuFile;
-    QAction *actionOpenDir;
     QAction *actionClose;
         //Serial Port Menu : can open, read (write) serial ports to communicate with
     QMenu *menuSerialPort;
